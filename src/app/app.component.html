@@ -1,0 +1,183 @@
+<!-- app.component.html -->
+
+<div class="container">
+  <h1>{{title}} <img src="../../../assets/booqable.svg" alt="" width="120"
+      height="120"></h1>
+  <br>
+  <h4>Start container</h4>
+
+  <form [formGroup]="angForm" (ngSubmit)="runContainer()" novalidate>
+
+    <div class="form-group row">
+
+    
+        <label  class="col-sm-2 col-form-label"><strong>Image:tag</strong><span style="color:red;">*</span></label>
+        <div class="col-sm-10">
+        <input id="text-box" class="form-control" [(ngModel)]="containerRequest.image" minlength="1" required
+          formControlName="imageNameTag" type="text">
+        </div>
+        <div
+          *ngIf="angForm.controls['imageNameTag'].invalid && (angForm.controls['imageNameTag'].dirty || angForm.controls['imageNameTag'].touched)"
+          class="alert alert-danger">
+          <div *ngIf="angForm.controls['imageNameTag'].errors.required">
+            Image name is required.
+          </div>          
+        </div>
+
+    </div>
+    <div class="form-group row">
+      <label  class="col-sm-2 col-form-label"><strong>Name:</strong></label>
+      <div class="col-sm-10">
+      <input  id="text-box" class="form-control" [(ngModel)]="containerRequest.name" formControlName="containername" type="text">
+    </div>
+  </div>
+    <div class="form-group row">
+        <label  class="col-sm-2 col-form-label"><strong>Port (external:internal):</strong></label>
+        <div class="col-sm-10">
+        <input  id="text-box" class="form-control" [(ngModel)]="containerRequest.port" formControlName="containerPort"  type="text">
+        </div>
+        <div
+          *ngIf="angForm.controls['containerPort'].invalid && (angForm.controls['containerPort'].dirty || angForm.controls['containerPort'].touched)"
+          class="alert alert-danger">
+          <div *ngIf="angForm.controls['containerPort'].errors.pattern">
+            If provided, must be formated as 8080:80 for example. Being "external:internal" docker
+          </div>     
+        </div>
+    </div>
+
+    <div class="form-group row">
+      <label  class="col-sm-2 col-form-label"><strong>Environment:</strong></label>
+      <div class="col-sm-10">
+      <input  id="text-box" class="form-control" [(ngModel)]="containerRequest.env_full" formControlName="containerEnvFull" type="text">
+    </div>
+      <div
+        *ngIf="angForm.controls['containerEnvFull'].invalid && (angForm.controls['containerEnvFull'].dirty || angForm.controls['containerEnvFull'].touched)"
+        class="alert alert-danger">
+        <div *ngIf="angForm.controls['containerEnvFull'].errors.pattern">
+          If provided, must be formated as: ENV_NAME=ENV_VALUE or NV_NAME1=ENV_VALUE1,NV_NAME2=ENV_VALUE2, ...
+        </div>
+      </div>
+    </div>
+
+
+    <br>
+    <button type="submit" [disabled]="angForm.pristine || angForm.invalid" class="btn btn-primary" >
+      OK
+    </button>
+  </form>
+
+  <br />
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page"><strong>Active Containers</strong></li>
+    </ol>
+  </nav>
+  <div class="container">
+    <div class="card list-transfer" id= "list-container">
+      <h5 class="card-header"  >Container list</h5>
+      <div class="card-body">
+        <table  class="table">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Name</th>
+              <th scope="col">Image</th>
+              <th scope="col">StartedAt</th>
+              <th scope="col">Status</th>
+              <th scope="col">Port</th>
+              <th scope="col">CreatedAt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr [hidden]="ct.Name.includes('prom_')" *ngFor="let ct of containers">
+              <td>{{ct.ShortId}}</td>
+              <td>{{ct.Name.substring(0, 15)}}</td>
+              <td>{{ct.Image.substring(0, 15)}}</td>
+              <td>{{ct.State.StartedAt.split(".")[0]}}</td>
+              <td>{{ct.State.Status}}</td>
+              <td><a href="{{ extractLink(ct) }}" target="_blank">{{extractPort(ct)}}</a></td>
+              <td>{{ct.CreatedAt}}</td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm ml-1" (click)="deleteContainerById(ct.ShortId)">Delete</button>
+              </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <br>
+
+  <h4>Download an image</h4>
+
+  <form [formGroup]="imageForm" (ngSubmit)="pullImage()" novalidate>
+
+    <div class="form-group row">
+
+        <label class="col-sm-2 col-form-label"><strong>Name</strong><span style="color:red;">*</span></label>
+      <div class="col-sm-10">
+        <input id="text-box" class="form-control" [(ngModel)]="imageRequest.name" minlength="1" required formControlName="imageName" type="text">
+        </div>
+        <div
+          *ngIf="imageForm.controls['imageName'].invalid && (imageForm.controls['imageName'].dirty || imageForm.controls['imageName'].touched)"
+          class="alert alert-danger">
+          <div *ngIf="imageForm.controls['imageName'].errors.required">
+            Image name is required
+          </div>
+        </div>
+
+      </div>
+        <div class="form-group row">
+        <label class="col-sm-2 col-form-label"><strong>Tag:</strong></label>
+        <div class="col-sm-10">
+        <input id="text-box" class="form-control" [(ngModel)]="imageRequest.tag" formControlName="imageTag"
+          type="text">   
+        </div>     
+      </div>
+
+    
+    <br>
+    <button type="submit" [disabled]="imageForm.pristine || imageForm.invalid" class="btn btn-primary">
+      OK
+    </button>
+    <app-my-loader></app-my-loader>
+  </form>
+
+  <br />
+
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page"><strong>Downloaded images</strong></li>
+    </ol>
+  </nav>
+  <div class="container">
+    <div class="card list-transfer" id= "list-container">
+      <h5 class="card-header">Images list</h5>
+      <div class="card-body">
+        <table class="table">
+          <thead>
+            <tr>
+              <th scope="col">Id</th>
+              <th scope="col">Name</th>
+              <th scope="col">Tag</th>
+              <th scope="col">CreatedAt</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let im of images">
+              <td>{{im.ShortId}}</td>
+              <td>{{im.Name}}</td>
+              <td>{{im.Tag}}</td>
+              <td>{{im.CreatedAt}}</td>
+              <td>
+                <button type="button" class="btn btn-danger btn-sm ml-1" (click)="deleteImageById(im.ShortId)">Delete</button>
+                <app-my-loader></app-my-loader>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
