@@ -3,11 +3,11 @@ version: "3"
 services:
     FrontEnd:
         container_name: FrontEnd
-        image: InTheLimit/FrontEnd
+        image: AtTheLimit/FrontEnd
         ports:
             - 4201:4200
     BackEnd:
         container_name: BackEnd
-        image: InTheLimit/BackEnd
+        image: AtTheLimit/BackEnd
         ports:
             - 8080:8080
