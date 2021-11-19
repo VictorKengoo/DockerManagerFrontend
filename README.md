@@ -1,4 +1,4 @@
-# Poseidon - Frontend 
+# Docker Manager - Frontend 
 
 ## Introduction
 
