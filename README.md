@@ -24,7 +24,7 @@ First of all, you must have Docker installed on your machine. If you use Linux t
 After installing docker you can deploy this application by using the following docker command on the project root folder:
 
 ```
-docker run -d -p 4201:4200 fepremazzi/FrontEnd
+docker run -d -p 4201:4200 InTheLimit/FrontEnd
 ```
 
 This command will download frontend image and initialize its container and expose the web application on ``http://localhost:4201``.
