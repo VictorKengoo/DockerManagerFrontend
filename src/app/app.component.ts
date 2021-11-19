@@ -90,6 +90,18 @@ export class AppComponent {
     })
   }
 
+  public deleteAllContainers(): void {
+    this.containerService.deleteAll().subscribe(() => {
+      this.findAllContainers();
+    })
+  }
+
+  public deleteAllImages(): void {
+    this.imageService.deleteAll().subscribe(() => {
+      this.findAllContainers();
+    })
+  }
+
   public findImageById(imageID: string): void {
     this.imageService.getById(imageID).subscribe((data: ImageResponse) =>{
       this.image = data;
