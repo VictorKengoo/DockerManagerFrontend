@@ -1,5 +1,9 @@
 # Docker Manager - Frontend 
 
+## Prerequisites
+
+* Have NPM installed
+
 ### Npm build
 
 * Download and install Node 14.3.0 available on <https://nodejs.org/pt-br/download/releases/> 
@@ -8,4 +12,4 @@
 * Clone this repository
 * Navigate to the root folder of your project and run the ``npm install`` to install all project dependencies.
 * Run the application by running the ``ng serve --open`` command.
-* It will be espose on port 4201 at ``http://localhost:4201``.
+* It will be espose on port 4200 at ``http://localhost:4200``.
